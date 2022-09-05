@@ -1,0 +1,20 @@
+{
+  "name": "apbctjslib",
+  "version": "1.0.0",
+  "description": "",
+  "main": "apbct.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "type apbct.js,apbctXHR.js,apbctAJAX.js,apbctREST.js > dist/apbctLibBundle.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CleanTalk/apbctJsLib.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CleanTalk/apbctJsLib/issues"
+  },
+  "homepage": "https://github.com/CleanTalk/apbctJsLib#readme"
+}
