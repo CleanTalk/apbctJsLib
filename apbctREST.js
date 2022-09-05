@@ -5,9 +5,9 @@ class ApbctRest extends ApbctXhr{
 
     constructor(...args) {
 
+        super(...args);
+
         args.url = this.default_route + args.route;
         args.headers['X-WP-Nonce'] = ctPublicFunctions._rest_nonce;
-
-        super(...args);
     }
 }
