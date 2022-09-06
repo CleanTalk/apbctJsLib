@@ -500,7 +500,8 @@ class ApbctCore{
 function apbct(params){
     return new ApbctCore()
         .select(params);
-}class ApbctXhr{
+}
+class ApbctXhr{
 
     #xhr = new XMLHttpRequest();
 
@@ -535,7 +536,7 @@ function apbct(params){
 
     constructor(parameters){
 
-        console.log('%cXHR%c started', 'color: red; font-weight: bold;', 'color: white; font-weight: normal;');
+        console.log('%cXHR%c started', 'color: red; font-weight: bold;', 'color: grey; font-weight: normal;');
 
         // Set class properties
         for( let key in parameters ){
@@ -554,7 +555,7 @@ function apbct(params){
         }
 
         if( ! this.url ){
-            console.log('%cXHR%c not URL provided', 'color: red; font-weight: bold;', 'color: white; font-weight: normal;')
+            console.log('%cXHR%c not URL provided', 'color: red; font-weight: bold;', 'color: grey; font-weight: normal;')
             return false;
         }
 
@@ -673,7 +674,7 @@ function apbct(params){
         this.#complete();
 
         if (this.responseType === 'json' ){
-            if(typeof this.#xhr.response === 'null'){
+            if(this.#xhr.response === null){
                 this.#error(this.#http_code, this.#status_text, 'No response');
                 return false;
             }else if( typeof this.#xhr.response.error !== 'undefined') {
@@ -715,7 +716,7 @@ function apbct(params){
     }
 
     errorOutput(error_msg){
-        console.log( '%c ctXHR error: %c' + error_msg, 'color: red;', 'color: white;' );
+        console.log( '%c ctXHR error: %c' + error_msg, 'color: red;', 'color: grey;' );
     }
 
     setHeaders(){
@@ -783,7 +784,7 @@ function apbct(params){
 
                 // Recursion
                 if( typeof object[objectKey] === 'object'){
-                    object[objectKey] = this.decodeJSONEncodedProperties(object[objectKey]);
+                    object[objectKey] = this.deleteDoubleJSONEncoding(object[objectKey]);
                 }
 
                 // Common case (out)
@@ -801,21 +802,24 @@ function apbct(params){
 
         return object;
     }
-}class ApbctAjax extends ApbctXhr{
+}
+class ApbctAjax extends ApbctXhr{
 
     constructor(...args) {
-        super(...args);
+        super(args[0]);
     }
-}class ApbctRest extends ApbctXhr{
+}
+class ApbctRest extends ApbctXhr{
 
-    default_route = ctPublicFunctions._rest_url + 'cleantalk-antispam/v1/';
+    static default_route = ctPublicFunctions._rest_url + 'cleantalk-antispam/v1/';
     route         = '';
 
     constructor(...args) {
-
-        super(...args);
-
-        args.url = this.default_route + args.route;
-        args.headers['X-WP-Nonce'] = ctPublicFunctions._rest_nonce;
+        args = args[0];
+        args.url = ApbctRest.default_route + args.route;
+        args.headers = {
+            "X-WP-Nonce": ctPublicFunctions._rest_nonce
+        };
+        super(args);
     }
 }
