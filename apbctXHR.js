@@ -33,7 +33,7 @@ class ApbctXhr{
 
     constructor(parameters){
 
-        console.log('%cXHR%c started', 'color: red; font-weight: bold;', 'color: white; font-weight: normal;');
+        console.log('%cXHR%c started', 'color: red; font-weight: bold;', 'color: grey; font-weight: normal;');
 
         // Set class properties
         for( let key in parameters ){
@@ -52,7 +52,7 @@ class ApbctXhr{
         }
 
         if( ! this.url ){
-            console.log('%cXHR%c not URL provided', 'color: red; font-weight: bold;', 'color: white; font-weight: normal;')
+            console.log('%cXHR%c not URL provided', 'color: red; font-weight: bold;', 'color: grey; font-weight: normal;')
             return false;
         }
 
@@ -171,7 +171,7 @@ class ApbctXhr{
         this.#complete();
 
         if (this.responseType === 'json' ){
-            if(typeof this.#xhr.response === 'null'){
+            if(this.#xhr.response === null){
                 this.#error(this.#http_code, this.#status_text, 'No response');
                 return false;
             }else if( typeof this.#xhr.response.error !== 'undefined') {
@@ -213,7 +213,7 @@ class ApbctXhr{
     }
 
     errorOutput(error_msg){
-        console.log( '%c ctXHR error: %c' + error_msg, 'color: red;', 'color: white;' );
+        console.log( '%c ctXHR error: %c' + error_msg, 'color: red;', 'color: grey;' );
     }
 
     setHeaders(){
@@ -281,7 +281,7 @@ class ApbctXhr{
 
                 // Recursion
                 if( typeof object[objectKey] === 'object'){
-                    object[objectKey] = this.decodeJSONEncodedProperties(object[objectKey]);
+                    object[objectKey] = this.deleteDoubleJSONEncoding(object[objectKey]);
                 }
 
                 // Common case (out)
