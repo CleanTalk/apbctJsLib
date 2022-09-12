@@ -17,6 +17,7 @@ class ApbctXhr{
 	progressbar = null; // Progress bar for the current request
 	context     = this; // Context
     callback    = null;
+    onErrorCallback = null;
 
 	responseType = 'json'; // Expected data type from server
     headers      = {};
@@ -149,8 +150,8 @@ class ApbctXhr{
             this.#status_text
         );
 
-        if (this.on_error !== null && typeof this.on_error === 'function'){
-            this.on_error();
+        if (this.onErrorCallback !== null && typeof this.onErrorCallback === 'function'){
+            this.onErrorCallback(this.#status_text);
         }
     }
 
@@ -161,8 +162,8 @@ class ApbctXhr{
             'timeout'
         );
 
-        if (this.on_error !== null && typeof this.on_error === 'function'){
-            this.on_error();
+        if (this.onErrorCallback !== null && typeof this.onErrorCallback === 'function'){
+            this.onErrorCallback('Timeout');
         }
     }
 

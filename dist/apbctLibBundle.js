@@ -453,7 +453,45 @@ class ApbctCore{
         }
     }
 
+    /**************  ANIMATION  **************/
+    fadeIn(time) {
+        for(let elem of this.elements){
+            elem.style.opacity = 0;
+            elem.style.display = 'block';
 
+            let last = +new Date();
+            const tick = function () {
+                elem.style.opacity = +elem.style.opacity + (new Date() - last) / time;
+                last = +new Date();
+
+                if (+elem.style.opacity < 1) {
+                    (window.requestAnimationFrame && requestAnimationFrame(tick)) || setTimeout(tick, 16);
+                }
+            };
+
+            tick();
+        }
+    }
+
+    fadeOut(time) {
+        for(let elem of this.elements){
+            elem.style.opacity = 1;
+
+            let last = +new Date();
+            const tick = function () {
+                elem.style.opacity = +elem.style.opacity - (new Date() - last) / time;
+                last = +new Date();
+
+                if (+elem.style.opacity > 0) {
+                    (window.requestAnimationFrame && requestAnimationFrame(tick)) || setTimeout(tick, 16);
+                } else {
+                    elem.style.display = 'none';
+                }
+            };
+
+            tick();
+        }
+    }
 }
 
 /**
@@ -520,6 +558,7 @@ class ApbctXhr{
 	progressbar = null; // Progress bar for the current request
 	context     = this; // Context
     callback    = null;
+    onErrorCallback = null;
 
 	responseType = 'json'; // Expected data type from server
     headers      = {};
@@ -652,8 +691,8 @@ class ApbctXhr{
             this.#status_text
         );
 
-        if (this.on_error !== null && typeof this.on_error === 'function'){
-            this.on_error();
+        if (this.onErrorCallback !== null && typeof this.onErrorCallback === 'function'){
+            this.onErrorCallback(this.#status_text);
         }
     }
 
@@ -664,8 +703,8 @@ class ApbctXhr{
             'timeout'
         );
 
-        if (this.on_error !== null && typeof this.on_error === 'function'){
-            this.on_error();
+        if (this.onErrorCallback !== null && typeof this.onErrorCallback === 'function'){
+            this.onErrorCallback('Timeout');
         }
     }
 
