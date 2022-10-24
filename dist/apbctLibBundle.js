@@ -445,7 +445,7 @@ class ApbctCore{
         }
     }
 
-    append(){
+    append(content){
         for(let elem of this.elements){
             elem.append(content);
         }
