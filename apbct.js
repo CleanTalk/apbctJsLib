@@ -3,13 +3,13 @@ class ApbctCore{
     ajax_parameters = {};
     rest_parameters = {};
 
-    #selector = null;
+    selector = null;
     elements = [];
 
     // Event properties
-    #eventCallback;
-    #eventSelector;
-    #event;
+    eventCallback;
+    eventSelector;
+    event;
 
     /**
      * Default constructor
@@ -27,44 +27,44 @@ class ApbctCore{
     select(selector) {
 
         if(selector instanceof HTMLCollection){
-            this.#selector    = null;
+            this.selector    = null;
             this.elements    = [];
             this.elements = Array.prototype.slice.call(selector);
         }else if( typeof selector === 'object' ){
-            this.#selector    = null;
+            this.selector    = null;
             this.elements    = [];
             this.elements[0] = selector;
         }else if( typeof selector === 'string' ){
-            this.#selector = selector;
+            this.selector = selector;
             this.elements = Array.prototype.slice.call(document.querySelectorAll(selector));
             // this.elements = document.querySelectorAll(selector)[0];
         }else{
-            this.#deselect();
+            this.deselect();
         }
 
         return this;
     }
 
-    #addElement(elemToAdd){
+    addElement(elemToAdd){
         if( typeof elemToAdd === 'object' ){
             this.elements.push(elemToAdd);
         }else if( typeof elemToAdd === 'string' ){
-            this.#selector = elemToAdd;
+            this.selector = elemToAdd;
             this.elements = Array.prototype.slice.call(document.querySelectorAll(elemToAdd));
         }else{
-            this.#deselect();
+            this.deselect();
         }
     }
 
-    #push(elem){
+    push(elem){
         this.elements.push(elem);
     }
 
-    #reduce(){
+    reduce(){
         this.elements = this.elements.slice(0,-1);
     }
 
-    #deselect(){
+    deselect(){
         this.elements = [];
     }
 
@@ -184,16 +184,16 @@ class ApbctCore{
      */
     on(...args){
 
-        this.#event         = args[0];
-        this.#eventCallback = args[2] || args[1];
-        this.#eventSelector = typeof args[1] === "string" ? args[1] : null;
+        this.event         = args[0];
+        this.eventCallback = args[2] || args[1];
+        this.eventSelector = typeof args[1] === "string" ? args[1] : null;
 
         for(let i=0; i<this.elements.length; i++){
             this.elements[i].addEventListener(
-                this.#event,
-                this.#eventSelector !== null
-                    ? this.#onChecker.bind(this)
-                    : this.#eventCallback
+                this.event,
+                this.eventSelector !== null
+                    ? this.onChecker.bind(this)
+                    : this.eventCallback
             );
         }
     }
@@ -204,10 +204,10 @@ class ApbctCore{
      * @param event
      * @returns {*}
      */
-    #onChecker(event){
-        if(event.target === document.querySelector(this.#eventSelector)){
+    onChecker(event){
+        if(event.target === document.querySelector(this.eventSelector)){
             event.stopPropagation();
-            return this.#eventCallback(event);
+            return this.eventCallback(event);
         }
     }
 
@@ -314,13 +314,13 @@ class ApbctCore{
         let outputValue = false;
 
         for(let elem of this.elements){
-            outputValue ||= this.#isElem(elem, filter);
+            outputValue ||= this.isElem(elem, filter);
         }
 
         return outputValue;
     }
 
-    #isElem(elemToCheck, filter){
+    isElem(elemToCheck, filter){
 
         let is = false;
         let isRegisteredTagName = function(name){
@@ -346,16 +346,16 @@ class ApbctCore{
 
             // Filter is CSS selector
             }else {
-                is ||= this.#selector !== null
-                    ? document.querySelector(this.#selector + filter) !== null // If possible
-                    : this.#isWithoutSelector(elemToCheck, filter);                    // Search through all elems with such selector
+                is ||= this.selector !== null
+                    ? document.querySelector(this.selector + filter) !== null // If possible
+                    : this.isWithoutSelector(elemToCheck, filter);                    // Search through all elems with such selector
             }
         }
 
         return is;
     }
 
-    #isWithoutSelector(elemToCheck, filter){
+    isWithoutSelector(elemToCheck, filter){
 
         let elems       = document.querySelectorAll(filter);
         let outputValue = false;
@@ -369,10 +369,10 @@ class ApbctCore{
 
     filter(filter){
 
-        this.#selector = null;
+        this.selector = null;
 
         for( let i = this.elements.length - 1; i >= 0; i-- ){
-            if( ! this.#isElem(this.elements[i], filter) ){
+            if( ! this.isElem(this.elements[i], filter) ){
                 this.elements.splice(Number(i), 1);
             }
         }
@@ -387,7 +387,7 @@ class ApbctCore{
         this.select(this.elements[0].parentElement);
 
         if( typeof filter !== 'undefined' && ! this.is(filter) ){
-            this.#deselect();
+            this.deselect();
         }
 
         return this;
@@ -398,7 +398,7 @@ class ApbctCore{
         this.select(this.elements[0]);
 
         for ( ; this.elements[ this.elements.length - 1].parentElement !== null ; ) {
-            this.#push(this.elements[ this.elements.length - 1].parentElement);
+            this.push(this.elements[ this.elements.length - 1].parentElement);
         }
 
         this.elements.splice(0,1); // Deleting initial element from the set
